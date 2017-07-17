@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>五子棋</title>
+	<link rel="stylesheet" type="text/css" href="./style/style.css">
+	<script src="./js/jq/jquery-3.2.1.js"></script>
+	<script src="./js/layout.js"></script>
+	<script src="./js/ai.js"></script>
+	<script src="./js/game.js"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="wrapper">
+			<div class="chessboard">
+				<div class="chess"></div>
+			</div>
+			<div class="handler">
+				
+			</div>
+		</div>
+		<div class="welcome">
+			<div class="welcome-wrapper">
+				<section id="choosegamemode">
+					<h2 id="gamemode-label">请选择对弈模式</h2>
+					<div class="gamemode">
+						<div><div class="mode pve" data-mode="pve">PVE（人机对弈）</div></div>
+						<div><div class="mode pvp" data-mode="pvp">PVP（人人对弈）</div></div>
+					</div>
+				</section>
+				<section id="choosecolor">
+					<h2 id="radio-label">请选择执子颜色</h2>
+					<div class="radio">
+						<div class="choosewhite">白</div>
+						<div class="chooseblack">黑</div>
+					</div>
+				</section>
+				<button class="start">开始</button>
+			</div>
+		</div>
+		<div class="end">
+			<div class="end-wrapper">
+				<h3></h3>
+				<button class="confirm">确定</button>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

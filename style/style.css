@@ -1,0 +1,222 @@
+html, body, div, h1, h2, h3, h4, h5, h6 {
+	padding: 0;
+	margin: 0;
+	font-size: 14px;
+	box-sizing: border-box;
+}
+body {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+}
+.container {
+	width: 100%;
+	height: 100%;
+}
+.wrapper {
+	margin: 0 auto;
+	background-color: linear-gradient(to right bottom, #eee, #fff);
+	overflow: hidden;
+}
+.chessboard {
+	margin: 0 auto;
+	background: url('./bg.jpg') no-repeat;
+	background-size: 100%;
+}
+.chess {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	/*background: rgb(200, 180, 180);*/
+}
+.chess > div {
+	position: absolute;
+	display: inline-block;
+	border-left: 2px solid #000;
+	border-bottom: 2px solid #000;
+}
+.chess > div.vertical-index {
+	border: 0;
+	left: -2rem;
+	text-align: right;
+}
+.chess > div.across-index {
+	border: 0;
+	bottom: -2rem;
+	text-align: center;
+}
+.chess > div.vertical-index span {
+	display: block;
+}
+.chess > span.chess-point {
+	position: absolute;
+	display: block;
+	width: 8px;
+	height: 8px;
+	background: #000;
+	border-radius: 50%;
+	transform: translateX(-50%) translateY(50%);
+}
+.chess > span.chess-click-point {
+	position: absolute;
+	display: block;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	transform: translateX(-50%) translateY(50%);
+}
+.chess > span.chesspiece {
+	position: absolute;
+	display: block;
+	width: 30px;
+	height: 30px;
+	border-radius: 50%;
+	transform: translateX(-50%) translateY(50%);
+}
+.chess > span.whitepiece {
+	background: #fff;
+}
+.chess > span.blackpiece {
+	background: #000;
+}
+
+.welcome {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+}
+.welcome-wrapper {
+	width: 256px;
+	height: 384px;
+	background: linear-gradient(to right bottom, #eee, #fff);
+	margin: 100px auto 0;
+	border-radius: 8px;
+	padding: 20px;
+	box-shadow: 6px 8px 50px rgba(0, 0, 0, 0.2);
+}
+.welcome-wrapper h2 {
+	font-size: 16px;
+	margin-bottom: 6px;
+}
+.welcome-wrapper button.start {
+	width: 100%;
+	height: 36px;
+	line-height: 36px;
+	border: 0;
+	border-radius: 3px;
+	background: rgb(60, 60, 255);
+	color: #fff;
+	cursor: pointer;
+}
+.welcome-wrapper button.start:hover {
+	background: rgb(80, 80, 255);
+}
+.welcome-wrapper .gamemode {
+	width: 100%;
+	margin-bottom: 12px;
+}
+.welcome-wrapper .gamemode > div {
+	background: #fff;
+	line-height: 28px;
+	text-align: center;
+	border: 1px solid #eee;
+	border-top: 0;
+	overflow: hidden;
+}
+.welcome-wrapper .gamemode > div:first-child {
+	border-top: 1px solid #eee;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+}
+.welcome-wrapper .gamemode > div:last-child {
+	border-bottom-left-radius: 5px;
+	border-bottom-right-radius: 5px;
+}
+.welcome-wrapper .gamemode > div div {
+	opacity: 0.6;
+	transition: opacity 0.5s;
+	cursor: pointer;
+}
+.welcome-wrapper .gamemode > div div:hover {
+	opacity: 1;
+}
+.welcome-wrapper #choosecolor {
+	display: none;
+}
+.welcome-wrapper .radio {
+	width: 100%;
+	margin-bottom: 12px;
+}
+.welcome-wrapper .radio::after {
+	content: '';
+	display: block;
+	clear: both;
+}
+.welcome-wrapper .radio .choosewhite, .welcome-wrapper .radio .chooseblack {
+	display: inline-block;
+	height: 28px;
+	width: 50%;
+	text-align: center;
+	line-height: 28px;
+	box-shadow: 0 0 10px #eee;
+	cursor: pointer;
+	opacity: 0.6;
+	transition: opacity 0.5s;
+}
+.welcome-wrapper .radio .choosewhite {
+	color: #000;
+	background: #fff;
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+	float: left;
+}
+.welcome-wrapper .radio .chooseblack {
+	color: #fff;
+	background: #000;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	float: right;
+}
+.welcome-wrapper .radio .choosewhite:hover, .welcome-wrapper .radio .chooseblack:hover {
+	opacity: 1;
+}
+
+.end {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0, 0, 0, 0.5);
+	display: none;
+}
+.end-wrapper {
+	width: 256px;
+	height: 384px;
+	background: linear-gradient(to right bottom, #eee, #fff);
+	margin: 100px auto 0;
+	border-radius: 8px;
+	padding: 20px;
+	box-shadow: 6px 8px 50px rgba(0, 0, 0, 0.2);
+}
+.end-wrapper h3 {
+	text-align: center;
+	font-size: 30px;
+}
+.end-wrapper button.confirm {
+	width: 100%;
+	height: 36px;
+	line-height: 36px;
+	border: 0;
+	border-radius: 3px;
+	background: rgb(60, 60, 255);
+	color: #fff;
+	cursor: pointer;
+}
+.end-wrapper button.confirm:hover {
+	background: rgb(80, 80, 255);
+}
