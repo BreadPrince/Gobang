@@ -134,8 +134,8 @@ $(function() {
 				var j = parseInt($(this).attr('data-point').split('-')[1])
 				addChesspiece(roundcolor, i, j, function() {
 					// ai turn
-					var coordinate = ai_2(roundcolor)
-					// var coordinate = alphabetaMax(roundcolor, 2, -Infinity, Infinity, CHESSBOARD)[1]
+					// var coordinate = ai_2(roundcolor)
+					var coordinate = alphabetaMax(roundcolor, 2, -Infinity, Infinity, CHESSBOARD)[1]
 					console.log(coordinate)
 					addChesspiece(roundcolor, coordinate[0], coordinate[1])
 				})

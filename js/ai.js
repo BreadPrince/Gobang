@@ -19,11 +19,11 @@ var valueTheChess = function (color, chess_model) {
 		}
 		// 活三
 		if (target.indexOf('-111-') === 2 || target.indexOf('-111-') === 3 || target.indexOf('-111-') === 4) {
-			score += 101
+			score += 1001
 		}
 		// 活四
 		if (target.indexOf('-1111-') === 1 || target.indexOf('-1111-') === 2 || target.indexOf('-1111-') === 3 || target.indexOf('-1111-') === 4) {
-			score += 10001
+			score += 100001
 		}
 		// 死三
 		if (target.indexOf('0111--') === 2 || target.indexOf('0111--') === 3 ||
@@ -45,27 +45,27 @@ var valueTheChess = function (color, chess_model) {
 		// 死四
 		if (target.indexOf('01111-') === 1 || target.indexOf('01111-') === 2 || 
 			target.indexOf('01111-') === 3 || target.indexOf('01111-') === 4) {
-			score += 5001
+			score += 50001
 		}
 		if (target.indexOf('-11110') === 1 || target.indexOf('-11110') === 2 || 
 			target.indexOf('-11110') === 3 || target.indexOf('-11110') === 4) {
-			score += 5001
+			score += 50001
 		}
 		if (target.indexOf('#1111-') === 1 || target.indexOf('#1111-') === 2 || 
 			target.indexOf('#1111-') === 3 || target.indexOf('#1111-') === 4) {
-			score += 5001
+			score += 50001
 		}
 		if (target.indexOf('-1111#') === 1 || target.indexOf('-1111#') === 2 || 
 			target.indexOf('-1111#') === 3 || target.indexOf('-1111#') === 4) {
-			score += 5001
+			score += 50001
 		}
 		// 冲四
 		if (target.indexOf('-1-111-') !== -1 || target.indexOf('01-111-') !== -1 || target.indexOf('-1-1110') !== -1 || target.indexOf('01-1110') !== -1 || target.indexOf('-1-111#') !== -1 || target.indexOf('#1-111-') !== -1 || target.indexOf('#1-111#') !== -1) {
-			score += 1001
+			score += 10001
 		}
 		// 五连
 		if (target.indexOf('-11111-') !== -1 || target.indexOf('011111-') !== -1 || target.indexOf('-111110') !== -1 || target.indexOf('0111110') !== -1 || target.indexOf('-11111#') !== -1 || target.indexOf('#11111-') !== -1 || target.indexOf('#11111#') !== -1) {
-			score = color === chosencolor ? 100001 : 1000001
+			score = color === chosencolor ? 1000001 : 10000001
 		}
 	})
 
@@ -241,14 +241,14 @@ var alphabetaMax = function(color, deep, alpha, beta, chessboard) {
 		var p = points[index]
 		var i = p[0], j = p[1]
 
-		var score = 0
-		chessboard[i][j] = color
-		if (deep <= 0 || win(i, j, chessboard)) {
-			score = getScore(color, i, j, chessboard) - getScore(anti_color, i, j, chessboard)
+		var score = -Infinity
+		if (deep-1 <= 0) {
+			score = getScore(color, i, j, chessboard)
 		} else {
+			chessboard[i][j] = color
 			score = alphabetaMin(anti_color, deep-1, alpha, beta, chessboard)[0]
+			chessboard[i][j] = '-'
 		}
-		chessboard[i][j] = '-'
 
 		if (score >= beta) {
 			result = p
@@ -259,6 +259,7 @@ var alphabetaMax = function(color, deep, alpha, beta, chessboard) {
 			alpha = score
 		}
 	}
+	console.log(alpha)
 	return [alpha, result]
 }
 
@@ -271,14 +272,14 @@ var alphabetaMin = function (color, deep, alpha, beta, chessboard) {
 		var p = points[index]
 		var i = p[0], j = p[1]
 
-		var score = 0
-		chessboard[i][j] = color
-		if (deep<=0 || win(i, j, chessboard)) {
-			score = getScore(anti_color, i, j, chessboard) - getScore(color, i, j, chessboard)
+		var score = Infinity
+		if (deep-1<=0) {
+			score = -getScore(color, i, j, chessboard)
 		} else {
+			chessboard[i][j] = color
 			score = alphabetaMax(anti_color, deep-1, alpha, beta, chessboard)[0]
+			chessboard[i][j] = '-'
 		}
-		chessboard[i][j] = '-'
 
 		if (score <= alpha) {
 			result = p
