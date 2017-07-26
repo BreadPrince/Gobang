@@ -232,64 +232,86 @@ var getAllLegalPoints = function (chessboard) {
 	return points
 }
 
-var alphabetaMax = function(color, deep, alpha, beta, chessboard) {
+var MIN = 0, MAX = 0
+var minmax = function (color, deep) {
+	var chessboard = CHESSBOARD
 	var points = getAllLegalPoints(chessboard)
 	var anti_color = color === 0 ? 1 : 0
-	var result = null
+	var best = 0
 
-	for (var index=0; index<points.length; index++) {
-		var p = points[index]
-		var i = p[0], j = p[1]
-
-		var score = 0
-		chessboard[i][j] = color
-		if (deep <= 0 || win(i, j, chessboard)) {
-			score = getScore(color, i, j, chessboard) - getScore(anti_color, i, j, chessboard)
+	var points_len = points.length
+	var best_points = []
+	for (var i=0; i<points_len; i++) {
+		var score, p = points[i]
+		score = getScore(color, p[0], p[1], chessboard) + getScore(anti_color, p[0], p[1], chessboard)
+		chessboard[p[0]][p[1]] = color
+		if (deep <= 1 || win(p[0], p[1], chessboard)) {
+			score = score
 		} else {
-			score = alphabetaMin(anti_color, deep-1, alpha, beta, chessboard)[0]
+			score = score - min(chessboard, anti_color, deep-1)
 		}
-		chessboard[i][j] = '-'
+		chessboard[p[0]][p[1]] = '-'
 
-		if (score >= beta) {
-			result = p
-			return [beta, result]
+		if (score === best) {
+			best_points.push(p)
 		}
-		if (score > alpha) {
-			result = p
-			alpha = score
+		if (score > best) {
+			best = score
+			best_points = [p]
 		}
 	}
-	return [alpha, result]
+
+	result = Math.floor(best_points.length * Math.random())
+
+	return best_points[result]
 }
 
-var alphabetaMin = function (color, deep, alpha, beta, chessboard) {
+var min = function (chessboard, color, deep) {
 	var points = getAllLegalPoints(chessboard)
+	var best = 0
 	var anti_color = color === 0 ? 1 : 0
-	var result = null
 
-	for (var index=0; index<points.length; index++) {
-		var p = points[index]
-		var i = p[0], j = p[1]
-
-		var score = 0
-		chessboard[i][j] = color
-		if (deep<=0 || win(i, j, chessboard)) {
-			score = getScore(anti_color, i, j, chessboard) - getScore(color, i, j, chessboard)
+	var points_len = points.length
+	for (var i=0; i<points_len; i++) {
+		var score, p = points[i]
+		score = getScore(color, p[0], p[1], chessboard) + getScore(anti_color, p[0], p[1], chessboard)
+		chessboard[p[0]][p[1]] = color
+		if (deep <= 1 || win(p[0], p[1], chessboard)) {
+			score = score
 		} else {
-			score = alphabetaMax(anti_color, deep-1, alpha, beta, chessboard)[0]
+			score = max(chessboard, anti_color, deep-1) - score
 		}
-		chessboard[i][j] = '-'
+		chessboard[p[0]][p[1]] = '-'
 
-		if (score <= alpha) {
-			result = p
-			return [alpha, result]
-		}
-		if (score < beta) {
-			result = p
-			beta = score
+		if (score > best) {
+			best = score
 		}
 	}
-	return [beta, result]
+	return score
+}
+
+var max = function (chessboard, color, deep) {
+	var points = getAllLegalPoints(chessboard)
+	var best = 0
+	var anti_color = color === 0 ? 1 : 0
+
+	var points_len = points.length
+	for (var i=0; i<points_len; i++) {
+		var score, p = points[i]
+		score = getScore(color, p[0], p[1], chessboard) + getScore(anti_color, p[0], p[1], chessboard)
+		chessboard[p[0]][p[1]] = color
+		if (deep <= 1 || win(p[0], p[1], chessboard)) {
+			score = score
+		} else {
+			score = score - min(chessboard, anti_color, deep-1)
+		}
+		chessboard[p[0]][p[1]] = '-'
+
+		if (score > best) {
+			best = score
+		}
+	}
+	return score
 }
 
 var win = function (i, j, chessboard) {

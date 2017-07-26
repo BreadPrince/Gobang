@@ -147,83 +147,18 @@ var getScore = function (color, i, j, chessboard) {
 	return valueTheChess(color, chess_model)
 }
 
-var ai_2 = function (color) {
-	var chessboard_size = CHESSBOARD.length
-	// console.log('chessboard_size: ' + chessboard_size)
-	var max_score = 1
-	var result = []
-	for (var x=0; x<chessboard_size; x++) {
-		for (var y=0; y<chessboard_size; y++) {
-			if (CHESSBOARD[x][y] === '-') {
-				var anti_color = color === 0 ? 1 : 0
-				var ai_score = getScore(color, x, y)
-				var player_score = getScore(anti_color, x, y)
-				// console.log('ai_score: ' + ai_score + '   ' + 'player_score: ' + player_score)
-				var score = ai_score + player_score
-
-				if (score > max_score) {
-					max_score = score
-					result = [{
-						score: score,
-						coordinate: [x, y]
-					}]
-				} else if (score === max_score) {
-					result.push({
-						score: score,
-						coordinate: [x, y]
-					})
-				}
-			}
-		}
-	}
-
-	if (result.length === 1) {
-		result = result[0].coordinate
-	} else if (result.length > 1) {
-		result = result[Math.floor(result.length*Math.random())].coordinate
-	} else {
-		result = [7, 7]
-	}
-
-	return result
-}
-
 var getAllLegalPoints = function (chessboard) {
 	if (!chessboard) {
 		chessboard = CHESSBOARD
 	}
 
+	var chessboard_size = chessboard.length
 	var points = []
-	var illegal_points = []
-	var illegal_points_x = []
-	var illegal_points_y = []
 
 	// 获取所有合法点
-	for (var i=0; i<15; i++) {
-		for (var j=0; j<15; j++) {
-			if (chessboard[i][j] !== '-') {
-				illegal_points_x.push(i)
-				illegal_points_y.push(j)
-				illegal_points.push([i, j].toString())
-			}
-		}
-	}
-
-	illegal_points_x.sort(function (a, b) { return a-b })
-	illegal_points_y.sort(function (a, b) { return a-b })
-
-	var min_x = illegal_points_x[0]
-	min_x = min_x-2 >= 0 ? min_x-2 : (min_x-1 >= 0 ? min_x-1 : min_x)
-	var max_x = illegal_points_x[illegal_points_x.length-1]
-	max_x = max_x+2 < 15 ? max_x+2 : (max_x+1 < 15 ? max_x+1 : max_x)
-	var min_y = illegal_points_y[0]
-	min_y = min_y-2 >= 0 ? min_y-2 : (min_y-1 >= 0 ? min_y-1 : min_y)
-	var max_y = illegal_points_y[illegal_points_y.length-1]
-	max_y = max_y+2 < 15 ? max_y+2 : (max_y+1 < 15 ? max_y+1 : max_y)
-
-	for (var i=min_x; i<=max_x; i++) {
-		for (var j=min_y; j<=max_y; j++) {
-			if (illegal_points.indexOf([i, j].toString()) === -1) {
+	for (var i=0; i<chessboard_size; i++) {
+		for (var j=0; j<chessboard_size; j++) {
+			if (chessboard[i][j] === '-') {
 				points.push([i, j])
 			}
 		}
@@ -232,64 +167,81 @@ var getAllLegalPoints = function (chessboard) {
 	return points
 }
 
-var alphabetaMax = function(color, deep, alpha, beta, chessboard) {
-	var points = getAllLegalPoints(chessboard)
+var MIN = 0, MAX = 0
+var minmax = function (color, deep) {
+	var points = getAllLegalPoints()
+	var chessboard = CHESSBOARD
+	var best = MIN
 	var anti_color = color === 0 ? 1 : 0
-	var result = null
 
-	for (var index=0; index<points.length; index++) {
-		var p = points[index]
-		var i = p[0], j = p[1]
-
-		var score = 0
-		chessboard[i][j] = color
-		if (deep <= 0 || win(i, j, chessboard)) {
-			score = getScore(color, i, j, chessboard) - getScore(anti_color, i, j, chessboard)
+	var points_len = points.length
+	var best_points = []
+	for (var i=0; i<points_len; i++) {
+		var score, p = points[i]
+		chessboard[p[0]][p[1]] = color
+		if (deep <= 1 || win(p[0], p[1], chessboard)) {
+			score = getScore(color, p[0], p[1])
 		} else {
-			score = alphabetaMin(anti_color, deep-1, alpha, beta, chessboard)[0]
+			score = min(chessboard, anti_color, deep-1)
 		}
-		chessboard[i][j] = '-'
 
-		if (score >= beta) {
-			result = p
-			return [beta, result]
+		if (score === best) {
+			best_points.push(p)
 		}
-		if (score > alpha) {
-			result = p
-			alpha = score
+		if (score > best) {
+			best = score
+			best_points = [p]
 		}
+		chessboard[p[0]][p[1]] = '-'
 	}
-	return [alpha, result]
+
+	result = Math.floor(best_points.length * Math.random())
+	console.log('MAX: ' + MAX + '   ' + 'MIN: ' + MIN)
+	return best_points[result]
 }
 
-var alphabetaMin = function (color, deep, alpha, beta, chessboard) {
+var min = function (chessboard, color, deep) {
 	var points = getAllLegalPoints(chessboard)
+	var best = MAX
 	var anti_color = color === 0 ? 1 : 0
-	var result = null
 
-	for (var index=0; index<points.length; index++) {
-		var p = points[index]
-		var i = p[0], j = p[1]
-
-		var score = 0
-		chessboard[i][j] = color
-		if (deep<=0 || win(i, j, chessboard)) {
-			score = getScore(anti_color, i, j, chessboard) - getScore(color, i, j, chessboard)
+	var points_len = points.length
+	for (var i=0; i<points_len; i++) {
+		var score, p = points[i]
+		chessboard[p[0]][p[1]] = color
+		if (deep <= 1 || win(p[0], p[1], chessboard)) {
+			score = getScore(anti_color, p[0], p[1], chessboard)
 		} else {
-			score = alphabetaMax(anti_color, deep-1, alpha, beta, chessboard)[0]
+			score = max(chessboard, color, deep-1)
 		}
-		chessboard[i][j] = '-'
-
-		if (score <= alpha) {
-			result = p
-			return [alpha, result]
+		if (score < best) {
+			best = score
 		}
-		if (score < beta) {
-			result = p
-			beta = score
-		}
+		chessboard[p[0]][p[1]] = '-'
 	}
-	return [beta, result]
+	return score
+}
+
+var max = function (chessboard, color, deep) {
+	var points = getAllLegalPoints(chessboard)
+	var best = MIN
+	var anti_color = color === 0 ? 1 : 0
+
+	var points_len = points.length
+	for (var i=0; i<points_len; i++) {
+		var score, p = points[i]
+		chessboard[p[0]][p[1]] = color
+		if (deep <= 1 || win(p[0], p[1], chessboard)) {
+			score = getScore(color, p[0], p[1], chessboard)
+		} else {
+			score = min(chessboard, anti_color, deep-1)
+		}
+		if (score > best) {
+			best = score
+		}
+		chessboard[p[0]][p[1]] = '-'
+	}
+	return score
 }
 
 var win = function (i, j, chessboard) {

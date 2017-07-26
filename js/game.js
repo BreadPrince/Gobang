@@ -22,12 +22,15 @@ $(function() {
 	}
 
 	// 打印棋盘
-	printChessBoard = function () {
+	printChessBoard = function (chessboard) {
+		if (!chessboard) {
+			chessboard = CHESSBOARD
+		}
 		console.log('当前对局情况如下: ')
 		var index = ''
-		for (var i=0; i<15; i++) {
+		for (var i=14; i>=0; i--) {
 			index = i+1 < 10 ? ' ' + (i+1) : i+1
-			console.log(index + '. ' + CHESSBOARD[i])
+			console.log(index + '. ' + chessboard[i])
 		}
 	}
 
@@ -57,14 +60,21 @@ $(function() {
 		}
 
 		roundcolor = roundcolor === 0 ? 1 : 0  // 换手
-		judgement(i, j)  // 输赢裁决
+		// 输赢裁决
+		if (!judgement(i, j)) {
+			if (callback) return callback()
+		} else {
+			return false
+		}
 
-		if (callback) return callback()
 	}
 
 	// 输赢判断
-	judgement = function (i, j) {
-		var flag = CHESSBOARD[i][j]
+	judgement = function (i, j, chessboard) {
+		if (!chessboard) {
+			chessboard = CHESSBOARD
+		}
+		var flag = chessboard[i][j]
 		// console.log("flag: " + flag)
 		var count = 0
 		var direction = []
@@ -76,7 +86,7 @@ $(function() {
 					var signal = true
 					while(signal) {
 						if ( (n+x)>=0 && (n+x)<15 && (m+y)>=0 && (m+y)<15 ) {
-							if (CHESSBOARD[n+x][m+y] === flag) {
+							if (chessboard[n+x][m+y] === flag) {
 								direction[count] += 1
 							} else {
 								signal = false
@@ -106,7 +116,11 @@ $(function() {
 			$('.end-wrapper h3').text(text)
 
 			isEnd = true
-		} 
+
+			return true
+		}
+
+		return false
 	}
 
 	// 下棋操作都在这
@@ -121,6 +135,8 @@ $(function() {
 				addChesspiece(roundcolor, i, j, function() {
 					// ai turn
 					var coordinate = ai_2(roundcolor)
+					// var coordinate = alphabetaMax(roundcolor, 2, -Infinity, Infinity, CHESSBOARD)[1]
+					console.log(coordinate)
 					addChesspiece(roundcolor, coordinate[0], coordinate[1])
 				})
 				
@@ -202,7 +218,8 @@ $(function() {
 			isStart = true
 			$('.welcome').css({'display': 'none'})
 			if (chosencolor === 1) {
-				var coordinate = ai_2(0)
+				// var coordinate = ai_2(0)
+				var coordinate = [7, 7]
 				addChesspiece(0, coordinate[0], coordinate[1])
 			}
 		} else if (gamemode === 1) {
